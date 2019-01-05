@@ -1,0 +1,13 @@
+#define __ucontext_SIZEOF 608
+#define UC_FLAGS 0
+#define UC_LINK 4
+#define MAGIC 8
+#define DI 20
+#define SI 24
+#define BP 28
+#define AX 48
+#define BX 36
+#define CX 44
+#define DX 40
+#define PC 56
+#define SP 68

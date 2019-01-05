@@ -1,2 +1,2 @@
 # minix-rust
-An attempt to rewrite MINIX 3.1.0 in Rust
+An attempt to rewrite MINIX 3.2.1 in Rust

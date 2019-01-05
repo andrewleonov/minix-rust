@@ -1,0 +1,43 @@
+boot 
+0 0
+d--755 0 0
+	bin d--755 0 0
+		cdprobe ---755 0 0 cdprobe
+#if RAMDISK_SMALL == 1
+		fsck.mfs ---755 0 0 fsck.mfs
+#endif
+		mount ---755 0 0 mount
+		sh ---755 0 0 sh
+		service ---755 0 0 service
+		sysenv ---755 0 0 sysenv
+	$
+	sbin d--755 0 0
+		floppy ---755 0 0 floppy
+		ahci ---755 0 0 ahci
+		virtio_blk ---755 0 0 virtio_blk
+		at_wini ---755 0 0 at_wini
+#if RAMDISK_SMALL == 1
+		ext2 ---755 0 0 ext2
+#endif
+		mfs ---755 0 0 mfs
+		procfs ---755 0 0 procfs
+	$
+	usr d--755 0 0
+		bin d--755 0 0
+			loadramdisk ---755 0 0 loadramdisk
+		$
+		sbin d--755 0 0
+#if RAMDISK_INC_ACPI == 1
+		acpi ---755 0 0 acpi
+#endif
+			pci ---755 0 0 pci
+		$
+	$
+	dev d--755 0 0
+#include "proto.dev"
+	$
+#include "proto.common.etc"
+#if RAMDISK_DYNAMIC == 1
+#include "proto.common.dynamic"
+#endif
+$
