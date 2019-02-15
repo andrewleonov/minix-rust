@@ -36,7 +36,7 @@
 char *** _penviron;
 
 /* Prototype declarations for PRIVATE functions. */
-static void announce(void);
+extern void announce(void);
 
 void bsp_finish_booting(void)
 {
@@ -313,17 +313,18 @@ void kmain(kinfo_t *local_cbi)
 /*===========================================================================*
  *				announce				     *
  *===========================================================================*/
-static void announce(void)
-{
-  /* Display the MINIX startup banner. */
-  printf("\nMINIX %s.%s. "
-#ifdef _VCS_REVISION
-	"(" _VCS_REVISION ")\n"
-#endif
-      "Copyright 2012, Vrije Universiteit, Amsterdam, The Netherlands\n",
-      OS_RELEASE, OS_VERSION);
-  printf("MINIX is open source software, see http://www.minix3.org\n");
-}
+//static void announce(void)
+//{
+//  /* Display the MINIX startup banner. */
+//  printf("\nMINIX %s.%s. "
+//#ifdef _VCS_REVISION
+//	"(" _VCS_REVISION ")\n"
+//#endif
+//      "Copyright 2012, Vrije Universiteit, Amsterdam, The Netherlands\n",
+//      OS_RELEASE, OS_VERSION);
+//  printf("MINIX is open source software, see http://www.minix3.org\n");
+//  printf("Modified by Andrew!\n");
+//}
 
 /*===========================================================================*
  *				prepare_shutdown			     *
