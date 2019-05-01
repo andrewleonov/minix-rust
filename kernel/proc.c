@@ -60,6 +60,7 @@ static int try_async(struct proc *caller_ptr);
 static int try_one(struct proc *src_ptr, struct proc *dst_ptr);
 static struct proc * pick_proc(void);
 static void enqueue_head(struct proc *rp);
+extern void rustqueue(struct proc *rp, struct proc **head, struct proc **tail);
 
 /* all idles share the same idle_priv structure */
 static struct priv idle_priv;
@@ -1524,40 +1525,46 @@ void enqueue(
  * This function can be used x-cpu as it always uses the queues of the cpu the
  * process is assigned to.
  */
-  int q = rp->p_priority;	 		/* scheduling queue to use */
+//  int q = rp->p_priority;	 		/* scheduling queue to use */
   struct proc **rdy_head, **rdy_tail;
-  
-  assert(proc_is_runnable(rp));
-
-  assert(q >= 0);
-
+//
+//  assert(proc_is_runnable(rp));
+//
+//  assert(q >= 0);
+//
   rdy_head = get_cpu_var(rp->p_cpu, run_q_head);
   rdy_tail = get_cpu_var(rp->p_cpu, run_q_tail);
+//
+//  /* Now add the process to the queue. */
+//  if (!rdy_head[q]) {		/* add to empty queue */
+//      rdy_head[q] = rdy_tail[q] = rp; 		/* create a new queue */
+//      rp->p_nextready = NULL;		/* mark new end */
+//  }
+//  else {					/* add to tail of queue */
+//      rdy_tail[q]->p_nextready = rp;		/* chain tail of queue */
+//      rdy_tail[q] = rp;				/* set new queue tail */
+//      rp->p_nextready = NULL;		/* mark new end */
+//  }
+//
 
-  /* Now add the process to the queue. */
-  if (!rdy_head[q]) {		/* add to empty queue */
-      rdy_head[q] = rdy_tail[q] = rp; 		/* create a new queue */
-      rp->p_nextready = NULL;		/* mark new end */
-  } 
-  else {					/* add to tail of queue */
-      rdy_tail[q]->p_nextready = rp;		/* chain tail of queue */	
-      rdy_tail[q] = rp;				/* set new queue tail */
-      rp->p_nextready = NULL;		/* mark new end */
-  }
+    // This function is in Rust - librust_enqueue.a
+    rustqueue(rp, rdy_head, rdy_tail);
 
-  if (cpuid == rp->p_cpu) {
-	  /*
-	   * enqueueing a process with a higher priority than the current one,
-	   * it gets preempted. The current process must be preemptible. Testing
-	   * the priority also makes sure that a process does not preempt itself
-	   */
-	  struct proc * p;
-	  p = get_cpulocal_var(proc_ptr);
-	  assert(p);
-	  if((p->p_priority > rp->p_priority) &&
-			  (priv(p)->s_flags & PREEMPTIBLE))
-		  RTS_SET(p, RTS_PREEMPTED); /* calls dequeue() */
-  }
+    if (cpuid == rp->p_cpu) {
+        /*
+         * enqueueing a process with a higher priority than the current one,
+         * it gets preempted. The current process must be preemptible. Testing
+         * the priority also makes sure that a process does not preempt itself
+         */
+        struct proc * p;
+        p = get_cpulocal_var(proc_ptr);
+        assert(p);
+        if((p->p_priority > rp->p_priority) &&
+           (priv(p)->s_flags & PREEMPTIBLE))
+            RTS_SET(p, RTS_PREEMPTED); /* calls dequeue() */
+    }
+
+
 #ifdef CONFIG_SMP
   /*
    * if the process was enqueued on a different cpu and the cpu is idle, i.e.

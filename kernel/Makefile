@@ -10,7 +10,7 @@ PROG=	kernel
 SRCS+=	clock.c cpulocals.c interrupt.c main.c proc.c system.c table.c utility.c usermapped_data.c
 
 DPADD+=	${LIBTIMERS} ${LIBSYS} ${LIBEXEC} ${LIBMINLIB}
-LDADD+=	-ltimers  -lsys -lexec -lminlib -lrustmain -L/usr/lib
+LDADD+= -lrustqueue -ltimers -lsys -lexec -lminlib -L/usr/lib
 
 LINKERSCRIPT= ${.CURDIR}/arch/${MACHINE_ARCH}/kernel.lds
 
